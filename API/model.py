@@ -86,7 +86,7 @@ class Product(db.Model):
     category = db.Column(db.Integer, db.ForeignKey('category.cid'), nullable=False)
     brand = db.Column(db.Integer, db.ForeignKey('brand.bid'), nullable=False)
     isMostSelling = db.Column(db.Integer, default=0)
-    # isFeatured = db.Column(db.Integer, default=0)
+    isFeatured = db.Column(db.Integer, default=0)
     isTopSelling = db.Column(db.Integer, default=0)
     description = db.Column(db.String)
     actual_price = db.Column(db.String)

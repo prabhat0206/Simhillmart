@@ -4,7 +4,6 @@ from .model import Brand, Category, Product
 from . import get_model_dict
 from sqlalchemy import or_
 import random
-import csv
 
 
 product_api = Blueprint('product', __name__)
@@ -66,12 +65,15 @@ class ProductAPI(Resource):
         products = Product.query.all()
         trending = []
         most_selling = []
+        in_offer = []
         all_other = []
         for product in products:
             if product.isMostSelling == 1:
                 most_selling.append(get_model_dict(product))
             if product.isTopSelling == 1:
                 trending.append(get_model_dict(product))
+            if product.isFeatured == 1:
+                in_offer.append(get_model_dict(product))
             all_other.append(get_model_dict(product))
         
         random.shuffle(most_selling)

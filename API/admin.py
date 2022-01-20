@@ -32,13 +32,13 @@ def admin_required(next):
 class ChangeCondition(Resource):
     def post(self):
         data = request.args
-        product = Product.query.filter_by(product_id=int(data['pid'])).first()
+        product = Product.query.filter_by(product_id=int(data['product_id'])).first()
         if 'is_most_sell' in data:
             product.isMostSelling = int(data.get('is_most_sell'))
         if 'is_top_sell' in data:
             product.isTopSelling = int(data.get('is_top_sell'))
-        # if 'is_featured' in data:
-        #     product.isFeatured = int(data.get('is_featured'))
+        if 'is_offer' in data:
+            product.isFeatured = int(data.get('is_offer'))
         
         db.session.commit()
 
@@ -74,6 +74,7 @@ class ProductHandler(Resource):
             description = data.get('description')
             actual_price = data.get('actual_price')
             sale_price = int(data.get('sale_price'))
+            is_featured = int(data.get('is_offer'))
             in_stock = int(data.get('in_stock'))
             quantity = data.get('quantity_per_pack')
             category = Category.query.filter_by(cid=cid).first()
@@ -96,6 +97,7 @@ class ProductHandler(Resource):
                 description=description,
                 actual_price=actual_price,
                 sale_price=sale_price,
+                is_featured=is_featured,
                 in_stock=in_stock,
                 quantity=quantity
             )
@@ -109,7 +111,7 @@ class ProductHandler(Resource):
     def delete(self):
         try:
             data = request.args
-            product = Product.query.filter_by(product_id=int(data["pid"])).first()
+            product = Product.query.filter_by(product_id=int(data["product_id"])).first()
             db.session.delete(product)
             db.session.commit()
             return {"Success": False, "message": "Product deleted successfully"}
