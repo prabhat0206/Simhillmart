@@ -68,18 +68,22 @@ class ProductAPI(Resource):
         in_offer = []
         all_other = []
         for product in products:
+            serlized_product = get_model_dict(product)
+            del serlized_product['uid']
+            del serlized_product['isFeatured']
+            serlized_product['inOffer'] = product.isFeatured
             if product.isMostSelling == 1:
-                most_selling.append(get_model_dict(product))
+                most_selling.append(serlized_product)
             if product.isTopSelling == 1:
-                trending.append(get_model_dict(product))
+                trending.append(serlized_product)
             if product.isFeatured == 1:
-                in_offer.append(get_model_dict(product))
-            all_other.append(get_model_dict(product))
+                in_offer.append(serlized_product)
+            all_other.append(serlized_product)
         
         random.shuffle(most_selling)
         random.shuffle(trending)
         random.shuffle(all_other)
-        return {"Success": True, "trending": trending, "best_deal": most_selling, "all_others": all_other}
+        return {"Success": True, "in_offer": in_offer, "trending": trending, "best_deal": most_selling, "all_others": all_other}
 
 
 
@@ -90,6 +94,7 @@ class ProductDetailsAPi(Resource):
         brand = Brand.query.filter_by(bid=product.brand).first()
         category = Category.query.filter_by(cid=product.category).first()
         serlized_product = get_model_dict(product)
+        del serlized_product['uid']
         serlized_product['brand'] = {
             "name": brand.name,
             "image_url": brand.image_url,
