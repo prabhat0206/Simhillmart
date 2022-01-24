@@ -38,8 +38,8 @@ class ChangeCondition(Resource):
             product.isMostSelling = int(data.get('is_most_sell'))
         if 'is_top_sell' in data:
             product.isTopSelling = int(data.get('is_top_sell'))
-        if 'is_offer' in data:
-            product.isFeatured = int(data.get('is_offer'))
+        if 'is_featured' in data:
+            product.isFeatured = int(data.get('is_featured'))
         
         db.session.commit()
 
