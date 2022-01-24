@@ -75,7 +75,6 @@ class ProductHandler(Resource):
             description = data.get('description')
             actual_price = data.get('actual_price')
             sale_price = int(data.get('sale_price'))
-            is_featured = int(data.get('is_offer'))
             in_stock = int(data.get('in_stock'))
             quantity = data.get('quantity_per_pack')
             category = Category.query.filter_by(cid=cid).first()
@@ -98,7 +97,6 @@ class ProductHandler(Resource):
                 description=description,
                 actual_price=actual_price,
                 sale_price=sale_price,
-                is_featured=is_featured,
                 in_stock=in_stock,
                 quantity=quantity
             )
