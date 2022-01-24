@@ -190,7 +190,7 @@ class OrderAPI(Resource):
                 return {'success': False, 'error': "Invalid payment signature"}
 
         for product in products:
-            total_price += product['price'] * product['quantity']
+            total_price += int(product['price']) * int(product['quantity'])
         
         user = User.query.filter_by(uid=auth.current_user()).first()
         address = Address.query.filter_by(address_id=address_id).first()
