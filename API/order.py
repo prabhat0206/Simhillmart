@@ -167,6 +167,7 @@ class OrderAPI(Resource):
     @auth.login_required()
     def post(self):
         data = request.get_json()
+        print(data)
         date = datetime.now().date()
         payment_mode = data['payment_mode']
         token = data['token']
@@ -189,7 +190,7 @@ class OrderAPI(Resource):
                 return {'success': False, 'error': "Invalid payment signature"}
 
         for product in products:
-            total_price += product['price']
+            total_price += product['price'] * product['quantity']
         
         user = User.query.filter_by(uid=auth.current_user()).first()
         address = Address.query.filter_by(address_id=address_id).first()
