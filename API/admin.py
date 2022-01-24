@@ -66,7 +66,7 @@ class ProductHandler(Resource):
         try:
             data = request.get_json()
             name = data.get('product_name')
-            image = data.get('image')
+            image = data.get('image_urls')
             cid = data.get('cid')
             bid = data.get('bid')
             isMostSelling = int(data.get('is_most_sell'))
@@ -143,8 +143,8 @@ class ProductHandler(Resource):
             product.in_stock=in_stock
             product.quantity=quantity
 
-            if "image" in data:
-                image = data['image']
+            if "image_urls" in data:
+                image = data['image_urls']
                 product.image_urls = image
             db.session.commit()
 
@@ -180,7 +180,7 @@ class CategoryHandler(Resource):
         try:
             data = request.get_json()
             name = data["name"]
-            image = data['image']
+            image = data['image_url']
             new_Category = Category(name=name, image_url=image)
             db.session.add(new_Category)
             db.session.commit()
@@ -210,15 +210,14 @@ class CategoryHandler(Resource):
             category = Category.query.filter_by(cid=int(data.get('cid'))).first()
             category.name = name
 
-            if 'image' in data:
-                category.image_url =data['image']
+            if 'image_url' in data:
+                category.image_url =data['image_url']
             
             db.session.commit()
 
             return {"Success": True, "message": "Category updated successfully"}
         except:
             return {"Success": False, "message": "Something went wrong"}
-
 
 class BrandHandler(Resource):
     @admin_required
@@ -248,7 +247,7 @@ class BrandHandler(Resource):
         try:
             data = request.get_json()
             name = data.get('name')
-            image = data['image']
+            image = data['image_url']
             new_Brand = Brand(name=name, image_url=image)
             db.session.add(new_Brand)
             db.session.commit()
@@ -275,8 +274,8 @@ class BrandHandler(Resource):
             brand = Brand.query.filter_by(bid=int(data["bid"])).first()
             brand.name = name
 
-            if "image" in request.files:
-                brand.image_url = data['image']
+            if "image_url" in request.files:
+                brand.image_url = data['image_url']
 
             db.session.commit()
             return {"Success": True, "message": "Brand updated successfully"}
@@ -413,7 +412,7 @@ class GetOrderbyStatus(Resource):
                     "quantity": product.quantity,
                     "price": product.price,
                     "weight": product.quantity,
-                    "image": product.image_url,
+                    "image_url": product.image_url,
                     "product_id": product.product_id,
                     "quantity_per_pack": product.quantity_init,
                 })
@@ -447,7 +446,7 @@ class CouponAdmin(Resource):
 
     @admin_required
     def post(self):
-        
+
         data = request.get_json()
         valid_days = timedelta(days=int(data['valid_till']))
         date = datetime.now()
