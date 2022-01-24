@@ -134,9 +134,11 @@ class CouponAPI(Resource):
         coupon = Coupon.query.filter_by(coupon_id=coupon_id).first()
         if coupon and user:
             if coupon in user.coupons:
-                return {"Success": False, "error": "Coupon already redeemed this coupon"}
+                return {"Success": False, "error": "Coupon already redeemed"}
             new_Coupon = get_model_dict(coupon)
-            del new_Coupon['uid']
+            del new_Coupon['uid'], new_Coupon['date'], new_Coupon['valid_till']
+            new_Coupon['date'] = str(coupon.date)
+            new_Coupon['valid_till'] = str(coupon.valid_till)
             return {"Success": True, "coupon": new_Coupon}
         else:
             return {"Success": False, "error": "Coupon not found"}
