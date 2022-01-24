@@ -9,7 +9,8 @@ class User(db.Model):
     address = db.relationship('Address', backref='address',cascade="all, delete-orphan")
     cart = db.relationship('Cart', backref='cart',cascade="all, delete-orphan")
     wishlist = db.relationship('Product', backref='wishlist',cascade="all, delete-orphan")
-    orders = db.relationship('Order', backref='order_by',cascade="all, delete-orphan")
+    orders = db.relationship('Order', backref='order_by', cascade="all, delete-orphan")
+    coupons = db.relationship('Coupon', backref='redeemed', cascade="all, delete-orphan")
 
 
 class Address(db.Model):
@@ -50,6 +51,7 @@ class Order(db.Model):
     products = db.relationship('mid_order_table', backref='ordered_products', cascade="all, delete-orphan")
     token = db.Column(db.String)
     payment_method = db.Column(db.String)
+    coupon_id = db.Column(db.String)
     # delivery_by = db.Column(db.Integer, db.ForeignKey('delivery.id'))
 
 
@@ -94,3 +96,11 @@ class Product(db.Model):
     in_stock = db.Column(db.Integer)
     quantity = db.Column(db.String)
 
+
+class Coupon(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    uid = db.Column(db.Integer, db.ForeignKey("user.uid"))
+    coupon_id = db.Column(db.String, unique=True)
+    percentage = db.Column(db.String)
+    valid_till = db.Column(db.Date)
+    date = db.Column(db.Date)

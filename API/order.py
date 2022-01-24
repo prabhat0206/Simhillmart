@@ -176,6 +176,7 @@ class OrderAPI(Resource):
         address_id = data['address_id']
         products = data['products']
 
+
         if payment_mode != "COD":
             order_id = data['orderid']
             signature = data['signature']
@@ -212,6 +213,9 @@ class OrderAPI(Resource):
                 new_order.order_id = data['orderid']
                 db.session.commit()
 
+            if 'coupon_id' in data:
+                new_order.coupon_id = data['coupon_id']
+                db.session.commit()
             products_ids = []
             for product in products:
                 products_ids.append(product['product_id'])

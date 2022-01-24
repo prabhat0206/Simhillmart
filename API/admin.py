@@ -2,8 +2,9 @@ from flask import Blueprint, request, abort
 from flask_restful import Resource, Api
 from functools import wraps
 from werkzeug.http import parse_authorization_header
-from .model import Order, Product, Category, Brand, User
+from .model import Order, Product, Category, Brand, User, Coupon
 from . import get_model_dict, db
+from datetime import datetime, timedelta
 from .config import ADMIN_EMAIL, ADMIN_PASSWORD
 
 admin = Blueprint('admin', __name__)
@@ -422,6 +423,45 @@ class GetOrderbyStatus(Resource):
         return {"Success": True, "orders": all_orders}
         
 
+class CouponAdmin(Resource):
+
+    @admin_required
+    def get(self):
+        if 'coupon_id' in request.args:
+            coupon = Coupon.query.filter_by(coupon_id=request.args['coupon_id']).first()
+            new_Coupon = get_model_dict(coupon)
+            del new_Coupon['uid'], new_Coupon['date'], new_Coupon['valid_till']
+            new_Coupon['date'] = str(coupon.date)
+            new_Coupon['valid_till'] = str(coupon.valid_till)
+            return {"Success": True, "Coupon": new_Coupon}
+
+        coupons = Coupon.query.order_by(Coupon.id.desc()).all()
+        all_coupons = []
+        for coupon in coupons:
+            new_Coupon = get_model_dict(coupon)
+            del new_Coupon['uid'], new_Coupon['date'], new_Coupon['valid_till']
+            new_Coupon['date'] = str(coupon.date)
+            new_Coupon['valid_till'] = str(coupon.valid_till)
+            all_coupons.append(new_Coupon)
+        return {"Success": True, "Coupons": all_coupons}
+
+    @admin_required
+    def post(self):
+        
+        data = request.get_json()
+        valid_days = timedelta(days=int(data['valid_till']))
+        date = datetime.now()
+        new_Coupon = Coupon(coupon_id=data['coupon_id'], percentage=data['percentage'], valid_till= date + valid_days, date=date)
+        db.session.add(new_Coupon)
+        db.session.commit()
+        return {"Success": True}
+
+    @admin_required
+    def delete(self):
+        coupon = Coupon.query.filter_by(coupon_id=request.args['coupon_id']).first()
+        db.session.delete(coupon)
+        db.session.commit()
+        return {"Success": True}
 
 
 api.add_resource(ProductHandler, '/product', endpoint="product")
@@ -431,4 +471,5 @@ api.add_resource(OrderHandler, '/order', endpoint="order")
 api.add_resource(UserHandler, '/users', endpoint="users")
 api.add_resource(Statistics, '/statistics', endpoint="statistics")
 api.add_resource(ChangeCondition, '/change_condition', endpoint="change_condition")
+api.add_resource(CouponAdmin, '/coupons', endpoint="coupons")
 api.add_resource(GetOrderbyStatus, '/get_order_by_status/<status>', endpoint="get_order_by")
