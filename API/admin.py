@@ -4,7 +4,6 @@ from functools import wraps
 from werkzeug.http import parse_authorization_header
 from .model import Order, Product, Category, Brand, User, Coupon
 from . import get_model_dict, db
-from datetime import datetime, timedelta
 from .config import ADMIN_EMAIL, ADMIN_PASSWORD
 
 admin = Blueprint('admin', __name__)
@@ -430,18 +429,18 @@ class CouponAdmin(Resource):
         if 'coupon_id' in request.args:
             coupon = Coupon.query.filter_by(coupon_id=request.args['coupon_id']).first()
             new_Coupon = get_model_dict(coupon)
-            del new_Coupon['uid'], new_Coupon['date'], new_Coupon['valid_till']
-            new_Coupon['date'] = str(coupon.date)
-            new_Coupon['valid_till'] = str(coupon.valid_till)
+            # del new_Coupon['uid'], new_Coupon['date'], new_Coupon['valid_till']
+            # new_Coupon['date'] = str(coupon.date)
+            # new_Coupon['valid_till'] = str(coupon.valid_till)
             return {"Success": True, "Coupon": new_Coupon}
 
         coupons = Coupon.query.order_by(Coupon.id.desc()).all()
         all_coupons = []
         for coupon in coupons:
             new_Coupon = get_model_dict(coupon)
-            del new_Coupon['uid'], new_Coupon['date'], new_Coupon['valid_till']
-            new_Coupon['date'] = str(coupon.date)
-            new_Coupon['valid_till'] = str(coupon.valid_till)
+            # del new_Coupon['uid'], new_Coupon['date'], new_Coupon['valid_till']
+            # new_Coupon['date'] = str(coupon.date)
+            # new_Coupon['valid_till'] = str(coupon.valid_till)
             all_coupons.append(new_Coupon)
         return {"Success": True, "Coupons": all_coupons}
 
@@ -449,9 +448,9 @@ class CouponAdmin(Resource):
     def post(self):
 
         data = request.get_json()
-        valid_days = timedelta(days=int(data['valid_till']))
-        date = datetime.now()
-        new_Coupon = Coupon(coupon_id=data['coupon_id'], percentage=data['percentage'], valid_till= date + valid_days, date=date)
+        # valid_days = timedelta(days=int(data['valid_till']))
+        # date = datetime.now()
+        new_Coupon = Coupon(coupon_id=data['coupon_id'], percentage=data['percentage'])
         db.session.add(new_Coupon)
         db.session.commit()
         return {"Success": True}

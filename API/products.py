@@ -1,7 +1,7 @@
 from flask import Blueprint, request
 from flask_restful import Api, Resource
 from .model import *
-from . import get_model_dict, auth
+from . import get_model_dict
 from sqlalchemy import or_
 import random
 from datetime import date
@@ -128,57 +128,35 @@ class SearchProduct(Resource):
 
 class CouponAPI(Resource):
 
-    @auth.login_required()
+    # @auth.login_required()
     def get(self, coupon_id):
-        user = User.query.filter_by(uid=auth.current_user()).first()
+        # user = User.query.filter_by(uid=auth.current_user()).first()
         coupon = Coupon.query.filter_by(coupon_id=coupon_id).first()
-        if coupon and user:
-            if coupon in user.coupons:
-                return {"Success": False, "error": "Coupon already redeemed"}
+        if coupon:
+            # if coupon in user.coupons:
+            #     return {"Success": False, "error": "Coupon already redeemed"}
             new_Coupon = get_model_dict(coupon)
-            del new_Coupon['uid'], new_Coupon['date'], new_Coupon['valid_till']
-            new_Coupon['date'] = str(coupon.date)
-            new_Coupon['valid_till'] = str(coupon.valid_till)
+            # del new_Coupon['uid'], new_Coupon['date'], new_Coupon['valid_till']
+            # new_Coupon['date'] = str(coupon.date)
+            # new_Coupon['valid_till'] = str(coupon.valid_till)
             return {"Success": True, "coupon": new_Coupon}
         else:
             return {"Success": False, "error": "Coupon not found"}
     
 
 class CouponsAPI(Resource):
-    @auth.login_required()
+
+    # @auth.login_required()
     def get(self):
         coupons = Coupon.query.order_by(Coupon.id.desc()).all()
-        user = User.query.filter_by(uid=auth.current_user()).first()
+        # user = User.query.filter_by(uid=auth.current_user()).first()
         all_valid = []
-        all_expired = []
-        all_redeemed = []
-        if user:
+        # all_expired = []
+        # all_redeemed = []
+        if coupons:
             for coupon in coupons:
-                if coupon.valid_till > date.today():
-                    if coupon in user.coupons:
-                        new_Coupon = get_model_dict(coupon)
-                        del new_Coupon['uid'], new_Coupon['date'], new_Coupon['valid_till']
-                        new_Coupon['date'] = str(coupon.date)
-                        new_Coupon['valid_till'] = str(coupon.valid_till)
-                        all_valid.append(new_Coupon)
-                    else:
-                        new_Coupon = get_model_dict(coupon)
-                        del new_Coupon['uid'], new_Coupon['date'], new_Coupon['valid_till']
-                        new_Coupon['date'] = str(coupon.date)
-                        new_Coupon['valid_till'] = str(coupon.valid_till)
-                        all_redeemed.append(new_Coupon)
-                else:
-                    new_Coupon = get_model_dict(coupon)
-                    del new_Coupon['uid'], new_Coupon['date'], new_Coupon['valid_till']
-                    new_Coupon['date'] = str(coupon.date)
-                    new_Coupon['valid_till'] = str(coupon.valid_till)
-                    all_expired.append(new_Coupon)
-            
-            return {"Success": True, "coupons": {
-                "valid": all_valid,
-                "expired": all_expired,
-                "redeemed": all_redeemed
-            }}
+                all_valid.append(get_model_dict(coupon))
+            return {"Success": True, "coupons": all_valid}
         else:
             return {"Success": False, "error": "not found"}
 
