@@ -25,7 +25,7 @@ class Wishlist(Resource):
     @auth.login_required()
     def post(self):
         user = User.query.filter_by(uid=auth.current_user()).first()
-        data = request.args
+        data = request.get_json()
         product_id = data['product_id']
         product = Product.query.filter_by(product_id=product_id).first()
         if user and product:
@@ -40,7 +40,7 @@ class Wishlist(Resource):
     @auth.login_required()
     def delete(self):
         user = User.query.filter_by(uid=auth.current_user()).first()
-        data = request.args
+        data = request.get_json()
         product_id = data['product_id']
         product = Product.query.filter_by(product_id=product_id).first()
         if user and product:
@@ -138,7 +138,6 @@ class OrderAPI(Resource):
             order_dic = get_model_dict(order)
             del order_dic['uid']
             del order_dic['date']
-            del order_dic['delivery_by']
             order_dic['date'] = str(order.date)
             dics_products = []
             for product in order.products:
@@ -154,7 +153,6 @@ class OrderAPI(Resource):
             order_dic = get_model_dict(order)
             del order_dic['uid']
             del order_dic['date']
-            del order_dic['delivery_by']
             order_dic['date'] = str(order.date)
             dics_products = []
             for product in order.products:
