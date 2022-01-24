@@ -17,7 +17,7 @@ CORS(app)
 db.init_app(app)
 migrate.init_app(app, db)
 
-client = razorpay.Client(auth=("rzp_test_VUcw251Tkcl3sR", "Clml3v4ZxdCi7hmvGAsVkfDR"))
+client = razorpay.Client(auth=("rzp_test_UMa6yf81WrbG64", "NmsNCnwSVk17kgF8BOSCxxW0"))
 
 
 def get_model_dict(model):
