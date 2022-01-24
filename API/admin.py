@@ -52,12 +52,16 @@ class ProductHandler(Resource):
     def get(self):
         if 'product_id' in request.args:
             product = Product.query.filter_by(product_id=int(request.args['product_id'])).first()
-            return {"Success": True, "Product": get_model_dict(product)}
+            new_product = get_model_dict(product)
+            del new_product['uid'], new_product['quantity']
+            new_product['quantity_per_pack'] = product.quantity
+            return {"Success": True, "Product": new_product}
         products = Product.query.order_by(Product.product_id.desc()).all()
         all_products = []
         for product in products:
             new_product = get_model_dict(product)
-            del new_product['uid']
+            del new_product['uid'], new_product['quantity']
+            new_product['quantity_per_pack'] = product.quantity
             all_products.append(new_product)
         return {"Success": True, "products": all_products}
     
