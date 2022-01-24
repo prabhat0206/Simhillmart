@@ -146,7 +146,7 @@ class OrderAPI(Resource):
                 dics_products.append(new_products)
             order_dic['products'] = dics_products
             return {"Success": True, "order": order_dic}
-        
+
         orders = user.orders
         all_orders = []
         for order in orders:

@@ -354,7 +354,6 @@ class UserHandler(Resource):
         all_users = []
         for user in users:
             user_dic = get_model_dict(user)
-            del user_dic['token']
             all_users.append(user_dic)
         return {"Success": True, "users": all_users}
 
