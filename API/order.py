@@ -138,6 +138,16 @@ class OrderAPI(Resource):
             order_dic = get_model_dict(order)
             del order_dic['uid']
             del order_dic['date']
+            del order_dic['delivery_by']
+            del order_dic['address_id']
+            new_Address = order.address_id.split(',')
+            order_dic['phone'] = new_Address[0]
+            order_dic['name'] = new_Address[1]
+            order_dic['address1'] = new_Address[2]
+            order_dic['address2'] = new_Address[3]
+            order_dic['city'] = new_Address[4]
+            order_dic['state'] = new_Address[5].split('-')[0]
+            order_dic['pin_code'] = new_Address[5].split('-')[1]
             order_dic['date'] = str(order.date)
             dics_products = []
             for product in order.products:
@@ -153,6 +163,16 @@ class OrderAPI(Resource):
             order_dic = get_model_dict(order)
             del order_dic['uid']
             del order_dic['date']
+            del order_dic['delivery_by']
+            del order_dic['address_id']
+            new_Address = order.address_id.split(',')
+            order_dic['phone'] = new_Address[0]
+            order_dic['name'] = new_Address[1]
+            order_dic['address1'] = new_Address[2]
+            order_dic['address2'] = new_Address[3]
+            order_dic['city'] = new_Address[4]
+            order_dic['state'] = new_Address[5].split('-')[0]
+            order_dic['pin_code'] = new_Address[5].split('-')[1]
             order_dic['date'] = str(order.date)
             dics_products = []
             for product in order.products:
@@ -161,7 +181,6 @@ class OrderAPI(Resource):
                 dics_products.append(new_products)
             order_dic['products'] = dics_products
             all_orders.append(order_dic)
-        
         return {"Success": True, "Orders": all_orders}
 
     @auth.login_required()

@@ -301,12 +301,17 @@ class OrderHandler(Resource):
                 del ordered['quantity_init']
                 ordered['quantity_per_pack'] = product.quantity_init
                 all_products.append(ordered)
-            addresses = order.address_id.split(',')
+            new_Address = order.address_id.split(',')
             new_Order['products'] = all_products
-            new_Order['telephone'] = addresses[0]
-            new_Order['address'] = ""
-            for data in addresses[1:]:
-                new_Order['address'] += data
+            new_Order['address'] = {
+                'phone' : new_Address[0],
+                'name' : new_Address[1],
+                'address1' : new_Address[2],
+                'address2' : new_Address[3],
+                'city' : new_Address[4],
+                'state' : new_Address[5].split('-')[0],
+                'pin_code' : new_Address[5].split('-')[1]
+            }
             return {"Success": True, "order": new_Order}
         
         orders = Order.query.order_by(Order.oid.desc()).all()
@@ -323,12 +328,17 @@ class OrderHandler(Resource):
                 del ordered['quantity_init']
                 ordered['quantity_per_pack'] = product.quantity_init
                 all_products.append(ordered)
-            addresses = order.address_id.split(',')
+            new_Address = order.address_id.split(',')
             new_Order['products'] = all_products
-            new_Order['telephone'] = addresses[0]
-            new_Order['address'] = ""
-            for data in addresses[1:]:
-                new_Order['address'] += data
+            new_Order['address'] = {
+                'phone' : new_Address[0],
+                'name' : new_Address[1],
+                'address1' : new_Address[2],
+                'address2' : new_Address[3],
+                'city' : new_Address[4],
+                'state' : new_Address[5].split('-')[0],
+                'pin_code' : new_Address[5].split('-')[1]
+            }
             all_orders.append(new_Order)
         return {"Success": True, "Orders": all_orders}
     
@@ -416,8 +426,17 @@ class GetOrderbyStatus(Resource):
                     "product_id": product.product_id,
                     "quantity_per_pack": product.quantity_init,
                 })
+            new_Address = order.address_id.split(',')
             new_Order['products'] = all_products
-            new_Order['address'] = order.address_id
+            new_Order['address'] = {
+                'phone' : new_Address[0],
+                'name' : new_Address[1],
+                'address1' : new_Address[2],
+                'address2' : new_Address[3],
+                'city' : new_Address[4],
+                'state' : new_Address[5].split('-')[0],
+                'pin_code' : new_Address[5].split('-')[1]
+            }
             all_orders.append(new_Order)
         return {"Success": True, "orders": all_orders}
         
